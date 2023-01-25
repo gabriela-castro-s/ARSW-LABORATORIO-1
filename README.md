@@ -6,6 +6,7 @@
 
 Entrega: Martes en el transcurso del día.
 Entregar: Fuentes y documento PDF con las respuestas.
+ Integrantes: Carol Cely y Gabriela 
 
 **Parte I Hilos Java**
 
