@@ -6,7 +6,7 @@
 
 Entrega: Martes en el transcurso del día.
 Entregar: Fuentes y documento PDF con las respuestas.
-
+Integrantes: Carol Cely y Gabriela Castro
 **Parte I Hilos Java**
 
 1. De acuerdo con lo revisado en las lecturas, complete las clases CountThread, para que las mismas definan el ciclo de vida de un hilo que imprima por pantalla los números entre A y B.
