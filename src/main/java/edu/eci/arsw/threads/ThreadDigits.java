@@ -17,19 +17,21 @@ public class ThreadDigits extends Thread{
 
     public void run(){
         double sum = 0;
-        for(int i = 0; i < count; i++){
-            if(i% PiDigits.DigitsPerSum == 0){
-                sum = 4 * PiDigits.sum(1, start);
-                double v = 2 * PiDigits.sum(4, start);
-                double v1 = PiDigits.sum(5, start);
-                double v2 = PiDigits.sum(6, start);
-                start += PiDigits.DigitsPerSum;
+        for (int i = 0; i < count; i++) {
+            if (i % PiDigits.DigitsPerSum == 0) {
+                sum = 4 * PiDigits.sum(1, start)
+                        - 2 * PiDigits.sum(4, start)
+                        - PiDigits.sum(5, start)
+                        - PiDigits.sum(6, start);
 
+                start += PiDigits.DigitsPerSum;
             }
-            
+
             sum = 16 * (sum - Math.floor(sum));
-            PiDigits.digits[start2-start1+1] = (byte)sum;
+            PiDigits.digits[start2-start1+i] = (byte) sum;
         }
+            
+
     }
 
 }

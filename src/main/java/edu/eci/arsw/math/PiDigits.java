@@ -34,25 +34,29 @@ public class PiDigits {
         if (count < 0) {
             throw new RuntimeException("Invalid Interval");
         }
-        
-        double sum = 0;
-
-        for (int i = 0; i < count; i++) {
-            if (i % DigitsPerSum == 0) {
-                sum = 4 * sum(1, start)
-                        - 2 * sum(4, start)
-                        - sum(5, start)
-                        - sum(6, start);
-
-                start += DigitsPerSum;
+        int threadCount = count/threads;
+        int ThreadContador = 0;
+        for (int i =0; i<threads+2;i++){
+            int threadStart = start + ((count/threads)*i);
+            if((count-ThreadContador)<threadCount){
+                ArrayThreads.add(new ThreadDigits(threadStart, count-ThreadContador,start));
             }
-
-            sum = 16 * (sum - Math.floor(sum));
-            digits[i] = (byte) sum;
+            else{
+                ArrayThreads.add(new ThreadDigits(threadStart, ThreadContador, start));
+            }
+            ThreadContador += threadCount;
         }
 
+        for(ThreadDigits t : ArrayThreads){
+            t.start();
+        }
+
+        for(ThreadDigits t : ArrayThreads){
+            t.join();
+        }
         return digits;
     }
+
 
     /// <summary>
     /// Returns the sum of 16^(n - k)/(8 * k + m) from 0 to k.
