@@ -1,5 +1,9 @@
 package edu.eci.arsw.math;
 
+import edu.eci.arsw.threads.ThreadDigits;
+
+import java.util.ArrayList;
+
 ///  <summary>
 ///  An implementation of the Bailey-Borwein-Plouffe formula for calculating hexadecimal
 ///  digits of pi.
@@ -8,8 +12,10 @@ package edu.eci.arsw.math;
 ///  </summary>
 public class PiDigits {
 
-    private static int DigitsPerSum = 8;
+    public static int DigitsPerSum = 8;
     private static double Epsilon = 1e-17;
+
+    public static byte[] digits;
 
     
     /**
@@ -18,7 +24,9 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int start, int count) {
+    public static byte[] getDigits(int start, int count, int threads) throws InterruptedException {
+        ArrayList<ThreadDigits> ArrayThreads = new ArrayList<>();
+        byte[] digits = new byte[count];
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
         }
@@ -26,26 +34,29 @@ public class PiDigits {
         if (count < 0) {
             throw new RuntimeException("Invalid Interval");
         }
-
-        byte[] digits = new byte[count];
-        double sum = 0;
-
-        for (int i = 0; i < count; i++) {
-            if (i % DigitsPerSum == 0) {
-                sum = 4 * sum(1, start)
-                        - 2 * sum(4, start)
-                        - sum(5, start)
-                        - sum(6, start);
-
-                start += DigitsPerSum;
+        int threadCount = count/threads;
+        int ThreadContador = 0;
+        for (int i =0; i<threads+2;i++){
+            int threadStart = start + ((count/threads)*i);
+            if((count-ThreadContador)<threadCount){
+                ArrayThreads.add(new ThreadDigits(threadStart, count-ThreadContador,start));
             }
-
-            sum = 16 * (sum - Math.floor(sum));
-            digits[i] = (byte) sum;
+            else{
+                ArrayThreads.add(new ThreadDigits(threadStart, ThreadContador, start));
+            }
+            ThreadContador += threadCount;
         }
 
+        for(ThreadDigits t : ArrayThreads){
+            t.start();
+        }
+
+        for(ThreadDigits t : ArrayThreads){
+            t.join();
+        }
         return digits;
     }
+
 
     /// <summary>
     /// Returns the sum of 16^(n - k)/(8 * k + m) from 0 to k.
@@ -53,7 +64,7 @@ public class PiDigits {
     /// <param name="m"></param>
     /// <param name="n"></param>
     /// <returns></returns>
-    private static double sum(int m, int n) {
+    public static double sum(int m, int n) {
         double sum = 0;
         int d = m;
         int power = n;
