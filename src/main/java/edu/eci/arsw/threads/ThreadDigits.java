@@ -3,35 +3,20 @@ package edu.eci.arsw.threads;
 import edu.eci.arsw.math.PiDigits;
 
 public class ThreadDigits extends Thread{
-    public int start;
-    public int count;
-    public int start1;
-    public int start2;
+    private int numeroInicial, cantidad;
+    private byte[] respuesta;
 
-    public ThreadDigits(int start, int count, int start1){
-        this.start2 = start;
-        this.start = start;
-        this.start1 = start;
-        this.count = count;
+    public ThreadDigits(int numA, int numB){
+        numeroInicial = numA;
+        cantidad = numB;
     }
 
     public void run(){
-        double sum = 0;
-        for (int i = 0; i < count; i++) {
-            if (i % PiDigits.DigitsPerSum == 0) {
-                sum = 4 * PiDigits.sum(1, start)
-                        - 2 * PiDigits.sum(4, start)
-                        - PiDigits.sum(5, start)
-                        - PiDigits.sum(6, start);
+        respuesta = PiDigits.getDigits(numeroInicial, cantidad);
+    }
 
-                start += PiDigits.DigitsPerSum;
-            }
-
-            sum = 16 * (sum - Math.floor(sum));
-            PiDigits.digits[start2-start1+i] = (byte) sum;
-        }
-            
-
+    public byte[] traerResultado(){
+        return respuesta;
     }
 
 }
