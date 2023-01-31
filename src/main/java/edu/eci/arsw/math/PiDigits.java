@@ -20,38 +20,39 @@ public class PiDigits {
     public static byte[] digits;
 
     public static byte[] getDigits(int start, int count, int cantidadHilos) throws InterruptedException, IOException {
-        int cantidadIndividual = count/cantidadHilos;
-        System.out.println("Cantidad Individual"+cantidadIndividual);
-        int cantidadPendiente = count - (cantidadIndividual*cantidadHilos);
-        System.out.println("Cantidad Pendiente"+cantidadPendiente);
-        ArrayList<ThreadDigits> arreglohilos = new ArrayList<>();
-        for(int i=0; i<cantidadHilos; i++){
-            if(i==0 && cantidadPendiente!=0){
-                arreglohilos.add(new ThreadDigits(start, cantidadIndividual+cantidadPendiente));
-                start = start + cantidadIndividual+cantidadPendiente;
-            }
-            else{
-                arreglohilos.add(new ThreadDigits(start, cantidadIndividual));
-                start = start + cantidadIndividual;
-            }
-        }
-
+        ArrayList<ThreadDigits> arregloHilos = crearHilos(start, count, cantidadHilos);
         //Iniciar Hilos
-        for(int i=0; i<arreglohilos.size(); i++){
-            arreglohilos.get(i).start();
+        for(int i=0; i<arregloHilos.size(); i++){
+            arregloHilos.get(i).start();
         }
         //Esperar a que todos terminene
-        for(int i=0; i<arreglohilos.size(); i++){
-            arreglohilos.get(i).join();
+        for(int i=0; i<arregloHilos.size(); i++){
+            arregloHilos.get(i).join();
         }
         //Generar el numero
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        for(int i=0; i<arreglohilos.size(); i++){
-            outputStream.write(arreglohilos.get(i).traerResultado());
+        for(int i=0; i<arregloHilos.size(); i++){
+            outputStream.write(arregloHilos.get(i).traerResultado());
         }
         return outputStream.toByteArray( );
     }
 
+    private  static ArrayList<ThreadDigits> crearHilos(int start, int count, int cantidadHilos){
+        int cantidadPorHilo = count/cantidadHilos;
+        int cantidadPendiente = count - (cantidadPorHilo*cantidadHilos);
+        ArrayList<ThreadDigits> arregloHilos = new ArrayList<>();
+        for(int i=0; i<cantidadHilos; i++){
+            if(i==0 && cantidadPendiente!=0){
+                arregloHilos.add(new ThreadDigits(start, cantidadPorHilo+cantidadPendiente));
+                start = start + cantidadPorHilo+cantidadPendiente;
+            }
+            else{
+                arregloHilos.add(new ThreadDigits(start, cantidadPorHilo));
+                start = start + cantidadPorHilo;
+            }
+        }
+        return arregloHilos;
+    }
     
     /**
      * Returns a range of hexadecimal digits of pi.
