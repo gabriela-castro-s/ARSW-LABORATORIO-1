@@ -15,7 +15,9 @@ public class Main {
     public static void main(String[] args) throws InterruptedException, IOException {
         System.out.println(bytesToHex(PiDigits.getDigits(0, 10, 3)));
         System.out.println(bytesToHex(PiDigits.getDigits(1, 100, 5)));
-        System.out.println(bytesToHex(PiDigits.getDigits(1, 1000000, 1)));
+        System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, 1)));
+        //Hallar cantidad de núcleos
+        int nucleos = Runtime.getRuntime().availableProcessors();
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
