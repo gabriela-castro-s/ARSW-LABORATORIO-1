@@ -1,7 +1,6 @@
 package edu.eci.arsw.math;
 
 import edu.eci.arsw.threads.ThreadDigits;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,39 +16,44 @@ public class PiDigits {
     public static int DigitsPerSum = 8;
     private static final double Epsilon = 1e-17;
 
-    public static byte[] digits;
-
+    /**
+     *
+     * @param start incio de la cuenta
+     * @param count cantidad de digitos a contar
+     * @param cantidadHilos cantidad de hilos requeridos
+     * @return arreglo de bytes correspondiente a los digitos hexagesimales
+     */
     public static byte[] getDigits(int start, int count, int cantidadHilos) throws InterruptedException, IOException {
         ArrayList<ThreadDigits> arregloHilos = crearHilos(start, count, cantidadHilos);
         //Iniciar Hilos
-        for(int i=0; i<arregloHilos.size(); i++){
-            arregloHilos.get(i).start();
+        for (ThreadDigits hilo : arregloHilos) {
+            hilo.start();
         }
         //Esperar a que todos terminene
-        for(int i=0; i<arregloHilos.size(); i++){
-            arregloHilos.get(i).join();
+        for (ThreadDigits hilo : arregloHilos) {
+            hilo.join();
         }
         //Generar el numero
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        for(int i=0; i<arregloHilos.size(); i++){
-            outputStream.write(arregloHilos.get(i).traerResultado());
+        for (ThreadDigits hilo : arregloHilos) {
+            outputStream.write(hilo.traerResultado());
         }
         return outputStream.toByteArray( );
     }
 
+    /**
+     * Crea la cantidad de hilos necesarios, dependiendo de los digitos que se piden contar
+     * @param start incio de la cuenta
+     * @param count cantidad de digitos a contar
+     * @param cantidadHilos cantidad de hilos requeridos
+     * @return arreglo con los hilos necesarios
+     */
     private  static ArrayList<ThreadDigits> crearHilos(int start, int count, int cantidadHilos){
         int cantidadPorHilo = count/cantidadHilos;
-        int cantidadPendiente = count - (cantidadPorHilo*cantidadHilos);
         ArrayList<ThreadDigits> arregloHilos = new ArrayList<>();
         for(int i=0; i<cantidadHilos; i++){
-            if(i==0 && cantidadPendiente!=0){
-                arregloHilos.add(new ThreadDigits(start, cantidadPorHilo+cantidadPendiente));
-                start = start + cantidadPorHilo+cantidadPendiente;
-            }
-            else{
-                arregloHilos.add(new ThreadDigits(start, cantidadPorHilo));
-                start = start + cantidadPorHilo;
-            }
+            arregloHilos.add(new ThreadDigits(start, cantidadPorHilo));
+            start = start + cantidadPorHilo;
         }
         return arregloHilos;
     }
@@ -60,7 +64,7 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int start, int count) {
+    public static byte [] getDigits(int start, int count) {
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
         }
