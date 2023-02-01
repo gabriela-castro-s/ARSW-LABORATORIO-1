@@ -13,11 +13,22 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        System.out.println(bytesToHex(PiDigits.getDigits(0, 10, 3)));
-        System.out.println(bytesToHex(PiDigits.getDigits(1, 100, 5)));
-        System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, 1)));
+        //System.out.println(bytesToHex(PiDigits.getDigits(0, 10, 3)));
+        //System.out.println(bytesToHex(PiDigits.getDigits(1, 100, 5)));
         //Hallar cantidad de núcleos
-        int nucleos = Runtime.getRuntime().availableProcessors();
+        //int nucleos = Runtime.getRuntime().availableProcessors();
+        //Con 1 hilo
+        //System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, 1)));
+        //Con tantos hilos como núcleos
+        //System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, nucleos)));
+        //Con tantos hilos como el doble de núcleos
+        //System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, nucleos)));
+        //Con tantos 200 hilos
+        //System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, 200)));
+        //Con tantos 500 hilos
+        System.out.println(bytesToHex(PiDigits.getDigits(1, 100000, 500)));
+
+
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
